@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+    <package name="shop" namespace="/" extends="struts-default">
+        <global-results>
+            <result name="aindex">/WEB-INF/main/aindex.jsp</result>
+        </global-results>
+        <action name="link_*_*" class="linkgoActoin" >
+            <result  name="linkgo">/WEB-INF/{1}/{2}.jsp</result>
+        </action>
+    </package>
+    <!--<package name="shop" namespace="/" extends="struts-default">
+        <action name="category_*" class="categoryAction" method="{1}">
+            <result name="index">/index.jsp</result>
+        </action>
+    </package>-->
+</struts>

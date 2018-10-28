@@ -1,15 +1,19 @@
 package com.shop.po;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Category {
     private int id;
     private String type;
     private Byte hot;
-
+    private Account account;
+    private Set<Product> products=new HashSet<Product>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @GenericGenerator(name ="identity",strategy ="identity")
@@ -40,6 +44,25 @@ public class Category {
 
     public void setHot(Byte hot) {
         this.hot = hot;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="account_id")
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    @OneToMany(cascade =CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "category")
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
     }
 
     @Override

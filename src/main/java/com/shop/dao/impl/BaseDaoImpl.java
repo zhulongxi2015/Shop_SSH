@@ -35,7 +35,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     }*/
     protected Session getSession() {
         //从当前线程获取session，如果没有则创建一个新的session
-        return sessionFactory.openSession();
+        return sessionFactory.getCurrentSession();
     }
     public void save(T t) {
         getSession().save(t);

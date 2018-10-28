@@ -34,4 +34,17 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> query() {
         return this.categoryDao.query();
     }
+    public List<Category> queryJoinAccount(String type,int page,int size){
+        return categoryDao.queryJoinAccount(type,page,size);
+    }
+    public Long getCount(String type){
+        return categoryDao.getCount(type);
+    }
+
+    public void deleteByIds(String ids) {
+        categoryDao.deleteByIds(ids);
+    }
+    public List<Category> queryByHot(boolean hot) {
+        return categoryDao.queryByHot(hot);
+    }
 }

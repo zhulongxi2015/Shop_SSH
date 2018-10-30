@@ -4,6 +4,7 @@ import com.shop.po.Category;
 import com.shop.po.Product;
 import com.shop.service.CategoryService;
 import com.shop.service.ProductService;
+import com.shop.utils.ProductTimerTask;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -11,24 +12,21 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 //@Component //监听器是web层的组件，它是tomcat实例化的，不是Spring实例化的。不能放到Spring中
 public class InitDataListener implements ServletContextListener {
-    private CategoryService categoryService;
-    private ProductService productService;
+
+    private ProductTimerTask productTimerTask;
     private ApplicationContext applicationContext;
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        applicationContext= WebApplicationContextUtils.getWebApplicationContext(servletContextEvent.getServletContext());
-        categoryService=(CategoryService) applicationContext.getBean("categoryService");
-        productService=(ProductService)applicationContext.getBean("productService");
-        List <List<Product>> bigList=new ArrayList<List<Product>>();//bigList中存放一个装有Category类的list
-        for( Category category: categoryService.queryByHot(true)){
-            System.out.println(1);
-            List<Product> list=productService.querByCategoryId(category.getId());
-            bigList.add(list);//将装有category的list放到bigList中
-        }
-        // 2. 把查询的bigList交给application内置对象
-        servletContextEvent.getServletContext().setAttribute("bigList",bigList);
+        applicationContext=WebApplicationContextUtils.getWebApplicationContext(servletContextEvent.getServletContext());
+        productTimerTask=(ProductTimerTask)applicationContext.getBean("productTimerTask");
+        //把内置对象交给productTimerTask,因为productTimerTask里面是拿不到application的，只能通过监听器set给它
+        productTimerTask.setServletContext(servletContextEvent.getServletContext());
+
+        //通过设置定时器，让首页的数据每个一小时同步一次（配置为守护线程）
+        new Timer(true).schedule(productTimerTask,0,1000*60*2);//每个一小时执行一次productTimerTask任务，即更新一下后台数据
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
